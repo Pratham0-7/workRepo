@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Pratham0-7/workRepo
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MY_GITHUB_PAT }}
 
       - name: Checkout Trial Repository
         uses: actions/checkout@v4
         with:
           repository: Pratham0-7/trialRepo
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MY_GITHUB_PAT }}
           path: trialRepo
 
       - name: Set Up Python
@@ -35,7 +35,7 @@ jobs:
         env:
           WORK_REPO: ${{ github.workspace }}
           TRIAL_REPO: ${{ github.workspace }}/trialRepo
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_PAT }}
           CLIENT_NAME: "example_client"
           SERVICE_NAME: "example_service"
         run: python sync_script.py
@@ -60,4 +60,4 @@ jobs:
           destination_branch: main
           pr_title: "chore: Update tag from trial.yaml"
           pr_body: "Automated PR to sync tag values from trial.yaml."
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.MY_GITHUB_PAT }}
