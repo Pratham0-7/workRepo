@@ -1,0 +1,63 @@
+name: Sync Tag Values and Create PR
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  sync-tags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Work Repository
+        uses: actions/checkout@v4
+        with:
+          repository: your-username/work-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Trial Repository
+        uses: actions/checkout@v4
+        with:
+          repository: your-username/trial-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: trial-repo
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install PyYAML GitPython PyGithub python-dotenv
+
+      - name: Run Sync Script
+        env:
+          WORK_REPO: ${{ github.workspace }}
+          TRIAL_REPO: ${{ github.workspace }}/trial-repo
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLIENT_NAME: "example_client"
+          SERVICE_NAME: "example_service"
+        run: python sync_script.py
+
+      - name: Commit Changes if Tag Updated
+        run: |
+          if git diff --quiet; then
+            echo "No changes detected. Skipping commit."
+            exit 0
+          fi
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout -b update-tag-version || git checkout update-tag-version
+          git add .
+          git commit -m "chore: Update tag version from trial.yaml"
+          git push -f origin update-tag-version
+
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: update-tag-version
+          destination_branch: main
+          pr_title: "chore: Update tag from trial.yaml"
+          pr_body: "Automated PR to sync tag values from trial.yaml."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
