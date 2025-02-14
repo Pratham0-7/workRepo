@@ -10,48 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 🔹 Debug: Check if GitHub can see the repositories
-      - name: Debug Repositories
-        run: |
-          echo "Checking if repositories exist..."
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               https://api.github.com/repos/Pratham0-7/workRepo
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               https://api.github.com/repos/Pratham0-7/trialRepo
-
-      # 🔹 Checkout Work Repository (Using GITHUB_TOKEN)
       - name: Checkout Work Repository
         uses: actions/checkout@v4
         with:
           repository: Pratham0-7/workRepo
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: main  # Ensures the branch exists
+          token: ${{ secrets.GITHUB_TOKEN }} # Use default GitHub token
 
-      # 🔹 Checkout Trial Repository
       - name: Checkout Trial Repository
         uses: actions/checkout@v4
         with:
           repository: Pratham0-7/trialRepo
           token: ${{ secrets.GITHUB_TOKEN }}
           path: trialRepo
-          ref: main  # Ensures the branch exists
 
-      # 🔹 Manual Cloning (Fallback if checkout fails)
-      - name: Manually Clone Work Repository (If Needed)
-        run: |
-          if [ ! -d "workRepo" ]; then
-            echo "Manual clone required"
-            git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Pratham0-7/workRepo.git
-          fi
-
-      - name: Manually Clone Trial Repository (If Needed)
-        run: |
-          if [ ! -d "trialRepo" ]; then
-            echo "Manual clone required"
-            git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Pratham0-7/trialRepo.git trialRepo
-          fi
-
-      # 🔹 Set Up Python
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
@@ -60,7 +31,6 @@ jobs:
       - name: Install Dependencies
         run: pip install PyYAML GitPython PyGithub python-dotenv
 
-      # 🔹 Run Sync Script
       - name: Run Sync Script
         env:
           WORK_REPO: ${{ github.workspace }}
@@ -70,7 +40,6 @@ jobs:
           SERVICE_NAME: "example_service"
         run: python sync_script.py
 
-      # 🔹 Commit Changes if Tag Updated
       - name: Commit Changes if Tag Updated
         run: |
           if git diff --quiet; then
@@ -84,7 +53,6 @@ jobs:
           git commit -m "chore: Update tag version from trial.yaml"
           git push -f origin update-tag-version
 
-      # 🔹 Create Pull Request
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
