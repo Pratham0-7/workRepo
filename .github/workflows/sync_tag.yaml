@@ -13,15 +13,15 @@ jobs:
       - name: Checkout Work Repository
         uses: actions/checkout@v4
         with:
-          repository: your-username/workRepo
+          repository: Pratham0-7/workRepo
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout Trial Repository
         uses: actions/checkout@v4
         with:
-          repository: your-username/trialRepo
+          repository: Pratham0-7/trialRepo
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: trial-repo
+          path: trialRepo
 
       - name: Set Up Python
         uses: actions/setup-python@v4
@@ -34,7 +34,7 @@ jobs:
       - name: Run Sync Script
         env:
           WORK_REPO: ${{ github.workspace }}
-          TRIAL_REPO: ${{ github.workspace }}/trial-repo
+          TRIAL_REPO: ${{ github.workspace }}/trialRepo
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLIENT_NAME: "example_client"
           SERVICE_NAME: "example_service"
