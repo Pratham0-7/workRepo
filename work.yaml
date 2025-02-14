@@ -1,0 +1,5 @@
+# Updated: Version tag synced from trial.yaml
+description: Configuration for the payment gateway service.
+service: payment-gateway
+tag: v1.2.4
+version: 1.2.3
