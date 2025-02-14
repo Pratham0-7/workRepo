@@ -13,13 +13,13 @@ jobs:
       - name: Checkout Work Repository
         uses: actions/checkout@v4
         with:
-          repository: your-username/work-repo
+          repository: your-username/workRepo
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout Trial Repository
         uses: actions/checkout@v4
         with:
-          repository: your-username/trial-repo
+          repository: your-username/trialRepo
           token: ${{ secrets.GITHUB_TOKEN }}
           path: trial-repo
 
